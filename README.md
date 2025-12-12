@@ -1,4 +1,4 @@
-````markdown
+
 # 🥊 Batalha de Threads (Node.js + TypeScript)
 
 Este projeto é uma simulação de **processamento paralelo** desenvolvida para a disciplina de **Sistemas Operacionais** do curso de Análise e Desenvolvimento de Sistemas (IFPI).
