@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚔️ Arena de Batalha de Professores</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 900px;
+            width: 100%;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .arena {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .professor-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border: 3px solid #667eea;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .professor-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .professor-card h3 {
+            color: #667eea;
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+
+        .professor-info {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .info-value {
+            color: #666;
+        }
+
+        .hp-bar {
+            background: #e0e0e0;
+            border-radius: 5px;
+            height: 25px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .hp-fill {
+            background: linear-gradient(90deg, #4caf50, #8bc34a);
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.8em;
+            transition: width 0.5s ease;
+        }
+
+        .golpe {
+            background: #667eea;
+            color: white;
+            padding: 8px;
+            border-radius: 5px;
+            margin-top: 10px;
+            font-style: italic;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1em;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-weight: bold;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .resultado {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 20px;
+            border-radius: 8px;
+            min-height: 100px;
+            display: none;
+        }
+
+        .resultado.show {
+            display: block;
+            animation: slideIn 0.5s ease;
+        }
+
+        .resultado h3 {
+            color: #856404;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .resultado-text {
+            color: #856404;
+            line-height: 1.6;
+            font-size: 0.95em;
+        }
+
+        .vencedor {
+            background: #d4edda;
+            border-left: 5px solid #28a745;
+            color: #155724;
+        }
+
+        .empate {
+            background: #e2e3e5;
+            border-left: 5px solid #6c757d;
+            color: #383d41;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .loading {
+            text-align: center;
+            color: #667eea;
+            font-weight: bold;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .loading.show {
+            display: block;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        @media (max-width: 600px) {
+            .arena {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⚔️ Arena de Batalha</h1>
+            <p class="subtitle">Professores em Combate Épico</p>
+        </header>
+
+        <div class="arena" id="arena">
+            <div class="professor-card" id="professor1">
+                <h3 id="nome1">Professor 1</h3>
+                <div class="professor-info">
+                    <div class="info-row">
+                        <span class="info-label">Matéria:</span>
+                        <span class="info-value" id="materia1">-</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">HP:</span>
+                        <span class="info-value" id="hp1">100</span>
+                    </div>
+                    <div class="hp-bar">
+                        <div class="hp-fill" id="hpFill1" style="width: 100%">100/100</div>
+                    </div>
+                    <div class="info-row" style="margin-top: 10px;">
+                        <span class="info-label">Ataque:</span>
+                        <span class="info-value" id="ataque1">15</span>
+                    </div>
+                </div>
+                <div class="golpe" id="golpe1">Golpe Especial</div>
+            </div>
+
+            <div class="professor-card" id="professor2">
+                <h3 id="nome2">Professor 2</h3>
+                <div class="professor-info">
+                    <div class="info-row">
+                        <span class="info-label">Matéria:</span>
+                        <span class="info-value" id="materia2">-</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">HP:</span>
+                        <span class="info-value" id="hp2">100</span>
+                    </div>
+                    <div class="hp-bar">
+                        <div class="hp-fill" id="hpFill2" style="width: 100%">100/100</div>
+                    </div>
+                    <div class="info-row" style="margin-top: 10px;">
+                        <span class="info-label">Ataque:</span>
+                        <span class="info-value" id="ataque2">15</span>
+                    </div>
+                </div>
+                <div class="golpe" id="golpe2">Golpe Especial</div>
+            </div>
+        </div>
+
+        <div class="buttons">
+            <button onclick="iniciarBatalha()">🥊 Iniciar Batalha</button>
+            <button onclick="resetarBatalha()">🔄 Resetar</button>
+        </div>
+
+        <div class="loading" id="loading">
+            ⏳ Os professores estão carregando seus golpes...
+        </div>
+
+        <div class="resultado" id="resultado">
+            <h3 id="resultadoTitulo">Resultado</h3>
+            <div class="resultado-text" id="resultadoTexto"></div>
+        </div>
+    </div>
+
+    <script>
+        // Simulação dos dados (em uma aplicação real, isso viria do Node.js/competicao.js)
+        const professores = [
+            {
+                nome: "Prof. Maykol",
+                materia: "Sistemas Operacionais",
+                hp: 100,
+                ataqueBase: 15,
+                golpeEspecial: "Deadlock Mortal"
+            },
+            {
+                nome: "Prof. Jeferson",
+                materia: "Análise e Desenvolvimento Software",
+                hp: 100,
+                ataqueBase: 15,
+                golpeEspecial: "Falta ; ❌!"
+            },
+            {
+                nome: "Prof. Iallen",
+                materia: "POO",
+                hp: 100,
+                ataqueBase: 15,
+                golpeEspecial: "Guitarra Eletrizante 🎸"
+            },
+            {
+                nome: "Prof. Mayllon",
+                materia: "Engenharia de Software",
+                hp: 100,
+                ataqueBase: 15,
+                golpeEspecial: "Ataque Duplo com Clone: VerasMayllon"
+            },
+            {
+                nome: "Prof. Jivago",
+                materia: "Estrutura de Dados",
+                hp: 100,
+                ataqueBase: 15,
+                golpeEspecial: "Ponteiro Selvagem 📍🦁"
+            },
+            {
+                nome: "Prof. Sekeff",
+                materia: "Arquitetura de Computadores",
+                hp: 100,
+                ataqueBase: 15,
+                golpeEspecial: "Buffer Overflow 💥"
+            }
+        ];
+
+        let guerreiro1 = null;
+        let guerreiro2 = null;
+
+        function selecionarGuerreiros() {
+            do {
+                guerreiro1 = JSON.parse(JSON.stringify(professores[Math.floor(Math.random() * professores.length)]));
+                guerreiro2 = JSON.parse(JSON.stringify(professores[Math.floor(Math.random() * professores.length)]));
+            } while (guerreiro1.nome === guerreiro2.nome);
+        }
+
+        function exibirGuerreiros() {
+            // Professor 1
+            document.getElementById("nome1").textContent = guerreiro1.nome;
+            document.getElementById("materia1").textContent = guerreiro1.materia;
+            document.getElementById("hp1").textContent = guerreiro1.hp;
+            document.getElementById("ataque1").textContent = guerreiro1.ataqueBase;
+            document.getElementById("golpe1").textContent = `⚡ ${guerreiro1.golpeEspecial}`;
+            document.getElementById("hpFill1").style.width = "100%";
+            document.getElementById("hpFill1").textContent = "100/100";
+
+            // Professor 2
+            document.getElementById("nome2").textContent = guerreiro2.nome;
+            document.getElementById("materia2").textContent = guerreiro2.materia;
+            document.getElementById("hp2").textContent = guerreiro2.hp;
+            document.getElementById("ataque2").textContent = guerreiro2.ataqueBase;
+            document.getElementById("golpe2").textContent = `⚡ ${guerreiro2.golpeEspecial}`;
+            document.getElementById("hpFill2").style.width = "100%";
+            document.getElementById("hpFill2").textContent = "100/100";
+        }
+
+        function calcularDano() {
+            // Simula o cálculo de dano (como no competicao.js)
+            const dano1 = Math.floor(Math.random() * 20) + guerreiro1.ataqueBase;
+            const dano2 = Math.floor(Math.random() * 20) + guerreiro2.ataqueBase;
+            return { dano1, dano2 };
+        }
+
+        function iniciarBatalha() {
+            const btnIniciar = document.querySelector("button:first-of-type");
+            btnIniciar.disabled = true;
+
+            const loading = document.getElementById("loading");
+            loading.classList.add("show");
+            document.getElementById("resultado").classList.remove("show");
+
+            // Simula o processamento da thread com delay
+            setTimeout(() => {
+                const { dano1, dano2 } = calcularDano();
+
+                // Atualiza vidas
+                guerreiro1.hp -= dano2;
+                guerreiro2.hp -= dano1;
+
+                // Garante que HP não fique negativo
+                if (guerreiro1.hp < 0) guerreiro1.hp = 0;
+                if (guerreiro2.hp < 0) guerreiro2.hp = 0;
+
+                // Atualiza interface
+                atualizarVidas();
+
+                // Mostra resultado
+                exibirResultado(dano1, dano2);
+
+                loading.classList.remove("show");
+                btnIniciar.disabled = false;
+            }, 2000);
+        }
+
+        function atualizarVidas() {
+            // Professor 1
+            const hp1Max = 100;
+            const percentual1 = (guerreiro1.hp / hp1Max) * 100;
+            document.getElementById("hp1").textContent = guerreiro1.hp;
+            document.getElementById("hpFill1").style.width = percentual1 + "%";
+            document.getElementById("hpFill1").textContent = `${guerreiro1.hp}/100`;
+            if (percentual1 <= 30) {
+                document.getElementById("hpFill1").style.background = "linear-gradient(90deg, #f44336, #e91e63)";
+            }
+
+            // Professor 2
+            const hp2Max = 100;
+            const percentual2 = (guerreiro2.hp / hp2Max) * 100;
+            document.getElementById("hp2").textContent = guerreiro2.hp;
+            document.getElementById("hpFill2").style.width = percentual2 + "%";
+            document.getElementById("hpFill2").textContent = `${guerreiro2.hp}/100`;
+            if (percentual2 <= 30) {
+                document.getElementById("hpFill2").style.background = "linear-gradient(90deg, #f44336, #e91e63)";
+            }
+        }
+
+        function exibirResultado(dano1, dano2) {
+            const resultado = document.getElementById("resultado");
+            const titulo = document.getElementById("resultadoTitulo");
+            const texto = document.getElementById("resultadoTexto");
+
+            let mensagem = `⚔️ <strong>${guerreiro1.nome}</strong> usou <em>"${guerreiro1.golpeEspecial}"</em> e causou <strong>${dano1}</strong> de dano!<br><br>`;
+            mensagem += `⚔️ <strong>${guerreiro2.nome}</strong> usou <em>"${guerreiro2.golpeEspecial}"</em> e causou <strong>${dano2}</strong> de dano!<br><br>`;
+
+            resultado.classList.remove("vencedor", "empate");
+
+            if (dano1 > dano2) {
+                titulo.textContent = `🏆 ${guerreiro1.nome} vence o round!`;
+                mensagem += `🎉 <strong>${guerreiro1.nome}</strong> derrotou <strong>${guerreiro2.nome}</strong>!`;
+                resultado.classList.add("vencedor");
+            } else if (dano2 > dano1) {
+                titulo.textContent = `🏆 ${guerreiro2.nome} vence o round!`;
+                mensagem += `🎉 <strong>${guerreiro2.nome}</strong> derrotou <strong>${guerreiro1.nome}</strong>!`;
+                resultado.classList.add("vencedor");
+            } else {
+                titulo.textContent = "🤝 Empate Técnico!";
+                mensagem += `⚖️ Ambos os professores causaram o mesmo dano!`;
+                resultado.classList.add("empate");
+            }
+
+            texto.innerHTML = mensagem;
+            resultado.classList.add("show");
+        }
+
+        function resetarBatalha() {
+            guerreiro1 = null;
+            guerreiro2 = null;
+            document.getElementById("resultado").classList.remove("show");
+            document.getElementById("loading").classList.remove("show");
+            selecionarGuerreiros();
+            exibirGuerreiros();
+        }
+
+        // Inicialização
+        document.addEventListener("DOMContentLoaded", () => {
+            selecionarGuerreiros();
+            exibirGuerreiros();
+        });
+    </script>
+</body>
+</html>
