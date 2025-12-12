@@ -53,7 +53,7 @@ node batalhaThreads.js
 
 -----
 
-Desenvolvido por **Vitor** 🎓
+Desenvolvido por **Vitor, Francisco Mailson e Mateus Araújo** 🎓
 
 ```
 ```
